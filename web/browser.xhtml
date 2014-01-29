@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Topicalizer Browser</title>
+        <link rel="stylesheet" type="text/css" href="css/styles.css" /> 
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <!--<script type="text/javascript" src="https://rawgithub.com/leafo/sticky-kit/v1.0.2/jquery.sticky-kit.min.js"></script>-->
+        <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+        <script type="text/javascript" src="js/chart.js" />
+        <script type="text/javascript">
+
+            jQuery.fn.d3Click = function() {
+                this.each(function(i, e) {
+                    var evt = document.createEvent("MouseEvents");
+                    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    e.dispatchEvent(evt);
+                });
+            };
+            //$(document).ready(function (){
+            //    $("#indexRightColumn").stick_in_parent({offset_top: 90});
+            //});            
+            var cbpAnimatedHeader = (function() {
+
+                var docElem = document.documentElement,
+                        header = document.querySelector('.cbp-af-header'),
+                        didScroll = false,
+                        changeHeaderOn = 1;
+                function init() {
+
+                    window.addEventListener('scroll', function(event) {
+                        if (!didScroll) {
+                            didScroll = true;
+                            setTimeout(scrollPage, 10);
+                        }
+                    }, false);
+                }
+
+                function scrollPage() {
+                    var sy = scrollY();
+                    if (sy >= changeHeaderOn) {
+                        $('#header').addClass('cbp-af-header-shrink');
+                    }
+                    else {
+                        $('#header').removeClass('cbp-af-header-shrink');
+                    }
+                    didScroll = false;
+                }
+
+                function scrollY() {
+                    return window.pageYOffset || docElem.scrollTop;
+                }
+
+                init();
+            })();
+
+            //$(document).ready(function() {
+
+            //});
+
+        </script>
+
+    </h:head>
+    <h:body>
+        <div id="main">
+
+            <div id="header" class="cbp-af-header">
+                <div class="cbp-af-inner">
+                    <h1>Topicalizer</h1>
+                    <nav> 
+                        <!--<a href="./index.xhtml">Back</a> -->
+                        <a href="#">Home</a> 
+                        <a href="#">Help</a> 
+                        <a href="#">Contact</a>
+                    </nav>
+                </div>
+            </div>
+
+            <div id="indexLeftColumn">
+
+                <script>
+                    //<![CDATA[
+                    var marginX = 100, marginY = 10,
+                            outerDiameter = $('#indexLeftColumn').width(),
+                            innerDiameter = (outerDiameter - marginX - marginY) * 0.6;
+                    //console.log(outerDiameter + ', ' + innerDiameter);
+                    var x = d3.scale.linear()
+                            .range([0, innerDiameter]);
+                    var y = d3.scale.linear()
+                            .range([0, innerDiameter]);
+                    var color = d3.scale.linear()
+                            .domain([-1, 5])
+                            .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+                            .interpolate(d3.interpolateHcl);
+                    var pack = d3.layout.pack()
+                            .padding(2)
+                            .size([innerDiameter, innerDiameter])
+                            .value(function(d) {
+                        return d.size;
+                    });
+                    var drag = d3.behavior.drag()
+                            .on('drag', function(d, i) {
+                        marginX += d3.event.dx;
+                        marginY += d3.event.dy;
+                        d3.select(this).attr("transform", function(d, i) {
+                            return "translate(" + [marginX, marginY] + ")";
+                        });
+                        d3.event.stopPropagation();
+                    });
+                    var svg = d3.select("#indexLeftColumn").append("svg")
+                            .attr("width", outerDiameter)
+                            .attr("height", outerDiameter)
+                            .append("g")
+                            .attr("transform", "translate(" + marginX + "," + marginY + ")").call(drag);
+                    var selectedElement = null;
+                    d3.json("datasources/per-document-topics.json", function(error, root) {
+                        var focus = root,
+                                nodes = pack.nodes(root);
+                        svg.append("g").selectAll("circle")
+                                .data(nodes)
+                                .enter().append("circle")
+                                //.transition()
+                                //.duration(3000)
+                                .attr("class", function(d) {
+                            return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+                        })
+                                .attr("id", function(d) {
+                            if (d.depth !== 3) {
+                                return d.name;
+                            }
+                            ;
+                        })
+                                .attr("transform", function(d) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        })
+                                .attr("r", function(d) {
+                            return d.r;
+                        })
+                                .style("fill", function(d) {
+                            return d.children ? color(d.depth) : null;
+                        })
+                                .on("click", function(d) {
+                            if (d3.event.defaultPrevented) {
+                                return; // click suppressed
+                            }
+                            console.log("clicked!");
+                            selectedElement = d.name;
+                            $("#chart-title").text(selectedElement);
+                            drawBarChart(selectedElement);
+                            if (d.depth === 3) {
+                                var sel = "#" + d.name;
+                                //console.log(sel);
+
+                                zoom(root);
+                                return $(sel).d3Click();
+                                //return zoom(d3.select('"' + sel + '"'));
+                                //return zoom(d3.select(sel));
+                            } else {
+                                return zoom(focus === d ? root : d);
+                            }
+                        });
+                        svg.append("g").selectAll("text")
+                                .data(nodes)
+                                .enter().append("text")
+                                .attr("class", "label")
+                                .attr("transform", function(d) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        })
+                                .style("opacity", function(d) {
+                            return d.parent === root ? 1 : 0;
+                        })
+                                .text(function(d) {
+                            return d.name;
+                        });
+                        d3.select(window)
+                                .on("click", function() {
+                            if (d3.event.defaultPrevented) {
+                                return; // click suppressed
+                            }
+                            console.log("clicked!");
+                            zoom(root);
+                        });
+                        function zoom(d, i) {
+                            focus = d;
+                            var k = innerDiameter / d.r / 2;
+                            x.domain([d.x - d.r, d.x + d.r]);
+                            y.domain([d.y - d.r, d.y + d.r]);
+                            d3.event.stopPropagation();
+                            var transition = d3.selectAll("text:not(.chart-label),circle").transition()
+                                    .duration(d3.event.altKey ? 7500 : 750)
+                                    .attr("transform", function(d) {
+                                return "translate(" + x(d.x) + "," + y(d.y) + ")";
+                            });
+                            transition.filter("circle")
+                                    .attr("r", function(d) {
+                                return k * d.r;
+                            });
+                            transition.filter("text")
+                                    .style("opacity", function(d) {
+                                return d.parent === focus ? 1 : 0;
+                            });
+                        }
+                    });
+                    d3.select(self.frameElement).style("height", outerDiameter + "px");
+                    //]]>
+                </script>
+            </div>
+            <div id="indexRightColumn">
+                <h3><span id="chart-title">Pick an element</span></h3>
+                <hr />
+                <div id="chart" style="display: none">
+                    
+                </div>
+                <!--<img src="img/tagCloud.png" alt="Category term cloud" style="max-width:100% !important; height:auto; display:block;"/>-->
+                <!--<div class="panel">
+                    <div class="front card">
+                        <h3>Category</h3>
+                    </div>
+                    <div class="back card">
+                        <h3>Operation</h3>
+                    </div>
+                </div>-->
+                <!--<h4>Similar Categories: </h4>
+                <a href="#">Category 1</a>|
+                <a href="#">Category 2</a>|
+                <a href="#">Category 3</a>-->
+            </div>
+            <div id="footer">
+                <a href="#">Universidad del Cauca | Telematics Engineering Group</a>
+            </div>
+        </div>
+    </h:body>
+</html>
+
