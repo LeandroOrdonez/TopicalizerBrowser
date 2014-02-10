@@ -8,7 +8,7 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <!--<script type="text/javascript" src="https://rawgithub.com/leafo/sticky-kit/v1.0.2/jquery.sticky-kit.min.js"></script>-->
         <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-        <script type="text/javascript" src="js/chart.js" />
+        <script type="text/javascript" src="js/chart.js"></script>
         <script type="text/javascript">
 
             jQuery.fn.d3Click = function() {
@@ -127,9 +127,8 @@
                         })
                                 .attr("id", function(d) {
                             if (d.depth !== 3) {
-                                return d.name;
+                                return d.id;
                             }
-                            ;
                         })
                                 .attr("transform", function(d) {
                             return "translate(" + d.x + "," + d.y + ")";
@@ -146,8 +145,9 @@
                             }
                             console.log("clicked!");
                             selectedElement = d.name;
+                            selectedElementId = d.id;
                             $("#chart-title").text(selectedElement);
-                            drawBarChart(selectedElement);
+                            drawBarChart(selectedElementId ? selectedElementId : selectedElement);
                             if (d.depth === 3) {
                                 var sel = "#" + d.name;
                                 //console.log(sel);
@@ -207,7 +207,7 @@
                 </script>
             </div>
             <div id="indexRightColumn">
-                <h3><span id="chart-title">Pick an element</span></h3>
+                <h3><span id="chart-title">Start by picking an element</span></h3>
                 <hr />
                 <div id="chart" style="display: none">
                     

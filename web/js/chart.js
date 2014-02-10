@@ -8,14 +8,14 @@
 
 var dataCategories, dataOperations;
 
-d3.csv("datasources/topics.csv", type, function(error, csvData) {
+d3.csv("datasources/topics.csv", function(error, csvData) {
     dataCategories = csvData;
     console.log(dataCategories);
     //console.log(data);
     //drawBarChart(selectedElement);
 });
 
-d3.csv("datasources/per-document-topics.csv", type, function(error, csvData) {
+d3.csv("datasources/per-document-topics.csv", function(error, csvData) {
     dataOperations = csvData;
     console.log(dataOperations);
     //console.log(data);
@@ -40,18 +40,18 @@ function drawBarChart(element) {
         data = dataCategories;
         selChart.style.display = 'inline';
         //console.log(idElement);
-    } else if (element !== "categories") {
+    } else if (element.indexOf("Operation") !== -1) {
         //console.log('Categy selected...');
-        idElement = element;
+        idElement = element.substring(element.indexOf(".") + 1);
         xAccessor = "Topic Probability";
         yAccessor = "Topic";
-        filterKey = "Operation Name";
+        filterKey = "Operation ID";
         data = dataOperations;
         selChart.style.display = 'inline';
     } else {
         selChart.style.display = 'none';
         d3.selectAll('#chart svg').remove();
-        $("#chart-title").text("Pick an element");
+        $("#chart-title").text("Start by picking an element");
     }
     
     var actualData = filterData();
@@ -174,12 +174,18 @@ function drawBarChart(element) {
 
     function filterData() {
         var filteredData = new Array();
+        var current, next;
         for (var i = 0; i < data.length; i++) {
             //console.log(data[i]["Topic"]);
+            current = data[i][filterKey];
+            next = i < (data.length - 1) ? data[(i+1)][filterKey] : current;
             if (data[i][filterKey] === idElement) {
                 //console.log(data[i]["Topic"] + ' === ' + selectedCategory);
                 //data[i]["Term Probability"] *= 100;
                 filteredData.push(data[i]);
+                if(current!==next) {
+                    break;
+                }
             }
         }
         return filteredData;
@@ -187,6 +193,10 @@ function drawBarChart(element) {
 }
 
 function type(d) {
-    d["Term Probability"] = +d["Term Probability"]; // coerce to number
+    if(d["Term Probability"]) {
+        d["Term Probability"] = +d["Term Probability"]; // coerce to number
+    } else if (d["Topic Probability"]) {
+        d["Topic Probability"] = +d["Topic Probability"];
+    }
     return d;
 }
