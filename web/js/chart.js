@@ -10,21 +10,21 @@ var dataCategories, dataOperations;
 
 d3.csv("datasources/topics.csv", function(error, csvData) {
     dataCategories = csvData;
-    console.log(dataCategories);
+//    console.log(dataCategories);
     //console.log(data);
     //drawBarChart(selectedElement);
 });
 
 d3.csv("datasources/per-document-topics.csv", function(error, csvData) {
     dataOperations = csvData;
-    console.log(dataOperations);
+//    console.log(dataOperations);
     //console.log(data);
     //drawBarChart(selectedElement);
 });
 
 function drawBarChart(element) {
-    var idElement, selChart = document.getElementById('chart'),
-            xAccessor, yAccessor, filterKey, data;
+    var idElement, selChart = $('#chart'),
+            xAccessor, yAccessor, filterKey, data, xLabel, yLabel;
     console.log('calling Draw BarChart...');
     if (!element) {
         //console.log('Falsy element' + selChart + ', ' + selChart.style);
@@ -34,23 +34,38 @@ function drawBarChart(element) {
         //$("#chart").style.display = 'inline';
         //consolse.log(selChart + ', ' + selChart.style);
         idElement = element.substring(element.indexOf("-") + 1);
-        xAccessor = "Term Probability";
-        yAccessor = "Term";
+        xAccessor = xLabel = "Term Probability";
+        yAccessor = yLabel = "Term";
         filterKey = "Topic";
         data = dataCategories;
-        selChart.style.display = 'inline';
+//        selChart.style.display = 'inline';
+        selChart.attr('style', 'display: inline');
+//        $('#service-uri-label').attr('style', 'display: none');
         //console.log(idElement);
+        $('#service-uri').attr('style', 'display: none');
+        $('#annotations').attr('style', 'display: none');
     } else if (element.indexOf("Operation") !== -1) {
         //console.log('Categy selected...');
         idElement = element.substring(element.indexOf(".") + 1);
         xAccessor = "Topic Probability";
+        xLabel = "Category Proportion";
         yAccessor = "Topic";
+        yLabel = "Category";
         filterKey = "Operation ID";
         data = dataOperations;
-        selChart.style.display = 'inline';
+//        selChart.style.display = 'inline';
+        selChart.attr('style', 'display: inline');
+        $('#service-uri').attr('style', 'display: inline');
+        $('#annotations').attr('style', 'display: inline');
     } else {
-        selChart.style.display = 'none';
+//        selChart.style.display = 'none';
+        selChart.attr('style', 'display: none');
+        $('#service-uri').attr('style', 'display: none');
+        $('#annotations').attr('style', 'display: none');
         d3.selectAll('#chart svg').remove();
+        d3.selectAll('#service-uri a').remove();
+        d3.selectAll('#annotations div').remove();
+//        $('#service-uri-label').attr('style', 'display: none');
         $("#chart-title").text("Start by picking an element");
     }
     
@@ -72,7 +87,17 @@ function drawBarChart(element) {
     var barValue = function(d) {
         return parseFloat(d[xAccessor]);
     };
-
+    var terms = function(d) {
+        if(element.indexOf("Operation") !== -1) {
+            return d["Terms"];
+        }
+    };
+    var serviceUri = function(d) {
+        if(element.indexOf("Operation") !== -1) {
+            return d["Service URI"];
+        }
+    };
+    
 // sorting
     var sortedData = actualData.sort(function(a, b) {
         return d3.descending(barValue(a), barValue(b));
@@ -101,7 +126,7 @@ function drawBarChart(element) {
             .attr("class", "chart-label")
             .style("text-anchor", "middle")
             .style("font-weight", "bold")
-            .text(xAccessor);
+            .text(xLabel);
 
     chart.append("text")
             .attr("transform", "rotate(-90)")
@@ -111,7 +136,7 @@ function drawBarChart(element) {
             .attr("dy", "1em")
             .style("text-anchor", "middle")
             .style("font-weight", "bold")
-            .text(yAccessor);
+            .text(yLabel);
 
 // grid line labels
     var gridContainer = chart.append('g')
@@ -171,6 +196,33 @@ function drawBarChart(element) {
             .attr("y1", -gridChartOffset)
             .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
             .style("stroke", "#000");
+    
+    d3.selectAll('#service-uri a').remove();
+    
+    var sUriContainer = (element.indexOf("Operation") !== -1) ? d3.select('#service-uri').selectAll("a")
+            .data(sortedData.slice(0, 1)).enter().append("a")
+            .attr("class", "annotation")
+            .style("text-decoration", "none")
+            .style("color", "cornflowerblue")
+            .attr("href", function(d) {
+//                console.log(terms(d));
+                return serviceUri(d);
+    })
+            .attr("target", "_blank")
+            .html(function(d) {
+//                console.log(terms(d));
+                return "(Service Documentation)";
+    }) : sUriContainer;
+       
+    d3.selectAll('#annotations div').remove();
+    
+    var annotationsContainer = (element.indexOf("Operation") !== -1) ? d3.select('#annotations').selectAll("div")
+            .data(sortedData.slice(0, 3)).enter().append("div")
+            .attr("class", "annotation")
+            .html(function(d) {
+//                console.log(terms(d));
+                return terms(d);
+    }) : annotationsContainer;
 
     function filterData() {
         var filteredData = new Array();

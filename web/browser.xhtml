@@ -173,7 +173,7 @@
                                 .text(function(d) {
                             return d.name;
                         });
-                        d3.select(window)
+                        d3.select("#indexLeftColumn")
                                 .on("click", function() {
                             if (d3.event.defaultPrevented) {
                                 return; // click suppressed
@@ -207,11 +207,21 @@
                 </script>
             </div>
             <div id="indexRightColumn">
-                <h3><span id="chart-title">Start by picking an element</span></h3>
+                <br />
+                <h3 style="padding: 0px; margin: 0px;"><span id="chart-title">Start by picking an element</span></h3>
+                <div id="service-uri" style="display: none">
+                    
+                </div>
+                <br />
                 <hr />
                 <div id="chart" style="display: none">
                     
                 </div>
+                <!--<h6><span id="service-uri-label" style="display: none">Service Documentation</span></h6>-->
+                <div id="annotations" style="display: none">
+                    <br /><br />
+                </div>
+                
                 <!--<img src="img/tagCloud.png" alt="Category term cloud" style="max-width:100% !important; height:auto; display:block;"/>-->
                 <!--<div class="panel">
                     <div class="front card">
