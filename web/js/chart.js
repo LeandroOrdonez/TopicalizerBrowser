@@ -68,7 +68,7 @@ function drawBarChart(element) {
 //        $('#service-uri-label').attr('style', 'display: none');
         $("#chart-title").text("Start by picking an element");
     }
-    
+
     var actualData = filterData();
     var valueLabelWidth = 40; // space reserved for value labels (right)
     var barHeight = 15; // height of one bar
@@ -88,16 +88,16 @@ function drawBarChart(element) {
         return parseFloat(d[xAccessor]);
     };
     var terms = function(d) {
-        if(element.indexOf("Operation") !== -1) {
+        if (element.indexOf("Operation") !== -1) {
             return d["Terms"];
         }
     };
     var serviceUri = function(d) {
-        if(element.indexOf("Operation") !== -1) {
+        if (element.indexOf("Operation") !== -1) {
             return d["Service URI"];
         }
     };
-    
+
 // sorting
     var sortedData = actualData.sort(function(a, b) {
         return d3.descending(barValue(a), barValue(b));
@@ -196,33 +196,59 @@ function drawBarChart(element) {
             .attr("y1", -gridChartOffset)
             .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
             .style("stroke", "#000");
-    
+
     d3.selectAll('#service-uri a').remove();
-    
-    var sUriContainer = (element.indexOf("Operation") !== -1) ? d3.select('#service-uri').selectAll("a")
-            .data(sortedData.slice(0, 1)).enter().append("a")
-            .attr("class", "annotation")
-            .style("text-decoration", "none")
-            .style("color", "cornflowerblue")
-            .attr("href", function(d) {
+
+    if (element.indexOf("Operation") !== -1) {
+        var sUriContainer = d3.select('#service-uri').selectAll("a")
+                .data(sortedData.slice(0, 1)).enter().append("a")
+                .attr("class", "annotation")
+                .style("text-decoration", "none")
+                .style("color", "cornflowerblue")
+                .attr("href", function(d) {
 //                console.log(terms(d));
-                return serviceUri(d);
-    })
-            .attr("target", "_blank")
-            .html(function(d) {
+            return serviceUri(d);
+        })
+                .attr("target", "_blank")
+                .html(function(d) {
 //                console.log(terms(d));
-                return "(Service Documentation)";
-    }) : sUriContainer;
-       
-    d3.selectAll('#annotations div').remove();
-    
-    var annotationsContainer = (element.indexOf("Operation") !== -1) ? d3.select('#annotations').selectAll("div")
-            .data(sortedData.slice(0, 3)).enter().append("div")
-            .attr("class", "annotation")
-            .html(function(d) {
+            return "(Service Documentation)";
+        });
+
+        d3.selectAll('#annotations div').remove();
+
+        var annotationsContainer = d3.select('#annotations').selectAll("div")
+                .data(sortedData.slice(0, 3)).enter().append("div")
+                .attr("class", "annotation")
+                .html(function(d) {
 //                console.log(terms(d));
-                return terms(d);
-    }) : annotationsContainer;
+            return terms(d);
+        });
+
+        var annStreams = $("#annotations div");
+        var tags = [];
+        for (var i = 0; i < annStreams.length; i++) {
+            var words = annStreams[i].innerHTML.split("; ");
+            words.forEach(function(value) {
+                if (tags.indexOf(value) === -1)
+                    tags.push(value);
+            });
+        }
+
+        //console.log(tags);
+
+        tags.forEach(function(e) {
+            tags[tags.indexOf(e)] = '<span class="tag">' + e + '</span> ';
+        });
+
+        //console.log(tags);
+        $("#annotations").html('<hr /><h4 style="padding: 0px; margin: 0px;">Annotations</h4><br />');
+        $("#annotations").append(tags);
+        $("#annotations").append('<br /><br /><a href="#" class="tags-button">What do you think?</a>');
+        $("#indexRightColumn").css("padding-bottom", "15px");
+    } else {
+        $("#indexRightColumn").css("padding-bottom", "30px");
+    }
 
     function filterData() {
         var filteredData = new Array();
@@ -230,12 +256,12 @@ function drawBarChart(element) {
         for (var i = 0; i < data.length; i++) {
             //console.log(data[i]["Topic"]);
             current = data[i][filterKey];
-            next = i < (data.length - 1) ? data[(i+1)][filterKey] : current;
+            next = i < (data.length - 1) ? data[(i + 1)][filterKey] : current;
             if (data[i][filterKey] === idElement) {
                 //console.log(data[i]["Topic"] + ' === ' + selectedCategory);
                 //data[i]["Term Probability"] *= 100;
                 filteredData.push(data[i]);
-                if(current!==next) {
+                if (current !== next) {
                     break;
                 }
             }
@@ -245,7 +271,7 @@ function drawBarChart(element) {
 }
 
 function type(d) {
-    if(d["Term Probability"]) {
+    if (d["Term Probability"]) {
         d["Term Probability"] = +d["Term Probability"]; // coerce to number
     } else if (d["Topic Probability"]) {
         d["Topic Probability"] = +d["Topic Probability"];
