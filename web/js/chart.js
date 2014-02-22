@@ -6,7 +6,7 @@
 
 //var selectedCategory = '3';
 
-var dataCategories, dataOperations;
+var dataCategories, dataOperations, tags;
 
 d3.csv("datasources/topics.csv", function(error, csvData) {
     dataCategories = csvData;
@@ -226,7 +226,7 @@ function drawBarChart(element) {
         });
 
         var annStreams = $("#annotations div");
-        var tags = [];
+        tags = [];
         for (var i = 0; i < annStreams.length; i++) {
             var words = annStreams[i].innerHTML.split("; ");
             words.forEach(function(value) {
@@ -236,16 +236,24 @@ function drawBarChart(element) {
         }
 
         //console.log(tags);
-
+        var formattedTags = [];
         tags.forEach(function(e) {
-            tags[tags.indexOf(e)] = '<span class="tag">' + e + '</span> ';
+            formattedTags.push('<span class="tag">' + e + '</span> ');
         });
 
         //console.log(tags);
         $("#annotations").html('<hr /><h4 style="padding: 0px; margin: 0px;">Annotations</h4><br />');
-        $("#annotations").append(tags);
-        $("#annotations").append('<br /><br /><a href="#" class="tags-button">What do you think?</a>');
+        $("#annotations").append(formattedTags);
+        $("#annotations").append('<br /><br /><a href="#" id="dialog-link" class="tags-button">What do you think?</a>');
         $("#indexRightColumn").css("padding-bottom", "15px");
+        // Link to open the dialog
+        $("#dialog-link").click(function(event) {
+            console.log("Click on dialog button...");
+//            $("#dialog").attr("title", $("#chart-title").text());
+            $("#annotations-input").text(tags);
+            $("#dialog").dialog("open");
+            event.preventDefault();
+        });
     } else {
         $("#indexRightColumn").css("padding-bottom", "30px");
     }

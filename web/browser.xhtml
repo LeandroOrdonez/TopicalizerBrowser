@@ -2,13 +2,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <h:head>
+    <head>
         <title>Topicalizer Browser</title>
-        <link rel="stylesheet" type="text/css" href="css/styles.css" /> 
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <!--<script type="text/javascript" src="https://rawgithub.com/leafo/sticky-kit/v1.0.2/jquery.sticky-kit.min.js"></script>-->
         <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
         <script type="text/javascript" src="js/chart.js"></script>
+        <script src="js/jquery-ui-1.10.4.custom.js"></script>
         <script type="text/javascript">
 
             jQuery.fn.d3Click = function() {
@@ -59,10 +61,40 @@
 
             //});
 
+            $(function() {
+                $("#dialog").dialog({
+                    autoOpen: false,
+                    width: 400,
+                    buttons: [
+                        {
+                            text: "Ok",
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Cancel",
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ],
+                    modal: true
+                });
+                // Hover states on the static widgets
+                /*$("#dialog-link").hover(
+                 function() {
+                 $(this).addClass("ui-state-hover");
+                 },
+                 function() {
+                 $(this).removeClass("ui-state-hover");
+                 }
+                 );*/
+            });
         </script>
 
-    </h:head>
-    <h:body>
+    </head>
+    <body>
         <div id="main">
 
             <div id="header" class="cbp-af-header">
@@ -211,18 +243,18 @@
                 <br />
                 <h3 style="padding: 0px; margin: 0px;"><span id="chart-title">Start by picking an element</span></h3>
                 <div id="service-uri" style="display: none">
-                    
+
                 </div>
                 <br />
                 <hr />
                 <div id="chart" style="display: none">
-                    
+
                 </div>
                 <!--<h6><span id="service-uri-label" style="display: none">Service Documentation</span></h6>-->
                 <div id="annotations" style="display: none">
                     <br /><br />
                 </div>
-                
+
                 <!--<img src="img/tagCloud.png" alt="Category term cloud" style="max-width:100% !important; height:auto; display:block;"/>-->
                 <!--<div class="panel">
                     <div class="front card">
@@ -241,6 +273,12 @@
                 <a href="#">Universidad del Cauca | Telematics Engineering Group</a>
             </div>
         </div>
-    </h:body>
+        <div id="dialog" title="Are you agree?">
+            <br /><label for="annotations-input">These are the current annotations for this operation: </label>
+            <br /><br />
+            <textarea id="annotations-input" rows="6"></textarea>
+            <!--<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>-->
+        </div>
+    </body>
 </html>
 
