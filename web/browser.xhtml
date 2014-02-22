@@ -157,7 +157,8 @@
                                 //return zoom(d3.select('"' + sel + '"'));
                                 //return zoom(d3.select(sel));
                             } else {
-                                return zoom(focus === d ? root : d);
+                                //return zoom(focus === d ? root : d);
+                                return zoom(d);
                             }
                         });
                         svg.append("g").selectAll("text")

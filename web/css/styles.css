@@ -40,7 +40,7 @@ span.tag {
     padding-top: 2px;
     padding-bottom: 2px;*/
     margin: 1px 1px 2px;
-    /*display:inline-block;*/
+    display:inline-block;
 }
 
 /*svg {
@@ -335,7 +335,8 @@ span.tag {
 }*/
 
 .tags-button {
-	background-color:#589de4;
+	/*background-color:#589de4;*/
+	background-color:#fff;
 	-webkit-border-top-left-radius:4px;
 	-moz-border-radius-topleft:4px;
 	border-top-left-radius:4px;
@@ -351,7 +352,8 @@ span.tag {
 	text-indent:0;
 	border:1px solid #469df5;
 	display:inline-block;
-	color:#ffffff;
+	/*color:#ffffff;*/
+	color:steelblue;
 	font-family:Arial;
 	font-size:13px;
 	font-weight:bold;
@@ -361,9 +363,10 @@ span.tag {
 	width:134px;
 	text-decoration:none;
 	text-align:center;
-	text-shadow:1px 1px 0px #287ace;
+	/*text-shadow:1px 1px 0px #287ace;*/
 }.tags-button:hover {
 	background-color:steelblue;
+        color:#fff;
 }.tags-button:active {
 	position:relative;
 	top:1px;
