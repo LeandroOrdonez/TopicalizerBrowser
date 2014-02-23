@@ -246,11 +246,20 @@ function drawBarChart(element) {
         $("#annotations").append(formattedTags);
         $("#annotations").append('<br /><br /><a href="#" id="dialog-link" class="tags-button">What do you think?</a>');
         $("#indexRightColumn").css("padding-bottom", "15px");
+
         // Link to open the dialog
         $("#dialog-link").click(function(event) {
             console.log("Click on dialog button...");
 //            $("#dialog").attr("title", $("#chart-title").text());
-            $("#annotations-input").text(tags);
+//            $("#annotations-input").empty();
+//            $("#annotations-input").tagit("destroy");
+            $('#annotations-input').tagit({tagSource: tags, sortable: true});
+            tags.forEach(function(e) {
+//                $('#annotations-input').append("<li data-value='" + e + "'>"+ e +"</li>");
+                $('#annotations-input').tagit("add", {label: e, value: e});
+            });
+
+//            $("#annotations-input").text(tags);
             $("#dialog").dialog("open");
             event.preventDefault();
         });
