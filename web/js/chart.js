@@ -26,6 +26,8 @@ function drawBarChart(element) {
     var idElement, selChart = $('#chart'),
             xAccessor, yAccessor, filterKey, data, xLabel, yLabel;
     console.log('calling Draw BarChart...');
+//    console.log(localStorage);
+    $('#save-btn').css('display', 'none');
     if (!element) {
         //console.log('Falsy element' + selChart + ', ' + selChart.style);
         selChart.style.display = 'none';
@@ -39,11 +41,17 @@ function drawBarChart(element) {
         filterKey = "Topic";
         data = dataCategories;
 //        selChart.style.display = 'inline';
-        selChart.attr('style', 'display: inline');
+        if (localStorage.getItem($('#chart-title').text())) {
+            $('#name-value').css('color', 'black').html(localStorage.getItem($('#chart-title').text()));
+        } else {
+            $('#name-value').css('color', 'grey').html('<em>none yet</em>');
+        }
+        $('#category-name').css('display', 'inline');
+        selChart.css('display', 'inline');
 //        $('#service-uri-label').attr('style', 'display: none');
         //console.log(idElement);
-        $('#service-uri').attr('style', 'display: none');
-        $('#annotations').attr('style', 'display: none');
+        $('#service-uri').css('display', 'none');
+        $('#annotations').css('display', 'none');
     } else if (element.indexOf("Operation") !== -1) {
         //console.log('Categy selected...');
         idElement = element.substring(element.indexOf(".") + 1);
@@ -54,19 +62,22 @@ function drawBarChart(element) {
         filterKey = "Operation ID";
         data = dataOperations;
 //        selChart.style.display = 'inline';
-        selChart.attr('style', 'display: inline');
-        $('#service-uri').attr('style', 'display: inline');
-        $('#annotations').attr('style', 'display: inline');
+        $('#category-name').css('display', 'none');
+        selChart.css('display', 'inline');
+        $('#service-uri').css('display', 'inline');
+        $('#annotations').css('display', 'inline');
     } else {
 //        selChart.style.display = 'none';
-        selChart.attr('style', 'display: none');
-        $('#service-uri').attr('style', 'display: none');
-        $('#annotations').attr('style', 'display: none');
+        selChart.css('display', 'none');
+        $('#category-name').css('display', 'none');
+        $('#service-uri').css('display', 'none');
+        $('#annotations').css('display', 'none');
         d3.selectAll('#chart svg').remove();
         d3.selectAll('#service-uri a').remove();
         d3.selectAll('#annotations div').remove();
 //        $('#service-uri-label').attr('style', 'display: none');
         $("#chart-title").text("Start by picking an element");
+        return;
     }
 
     var actualData = filterData();

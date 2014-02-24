@@ -246,6 +246,19 @@
             <div id="indexRightColumn">
                 <br />
                 <h3 style="padding: 0px; margin: 0px;"><span id="chart-title">Start by picking an element</span></h3>
+                <span id="category-name" style="display: none">
+                    <span id="name-label" style="font-size: 11px; font-weight: bold ">Name: </span>&nbsp;<span id="name-value" contenteditable="true"></span>
+                </span><button id="save-btn" style="display: none" type="button">save</button>
+                <script type="text/javascript">
+                    $('#name-value').focus(function() {
+                        $('#name-value').css('color', 'black');
+                        $('#save-btn').css('display', 'inline');
+                    });
+                    $('#save-btn').click(function() {
+                        localStorage.setItem($('#chart-title').text(), $('#name-value').text());
+                        $('#save-btn').css('display', 'none');
+                    });
+                </script>
                 <div id="service-uri" style="display: none">
 
                 </div>

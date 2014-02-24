@@ -115,6 +115,32 @@ span.tag {
     width: 100%;
 }
 
+#category-name {
+   font-size: 11px;
+}
+
+#category-name #name-label {
+    font-weight: bold;
+}
+
+#save-btn {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  font-family: Arial;
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 11px;
+  background: #3498db;
+  /*padding: 3px 6px 3px 6px;*/
+  text-decoration: none;
+}
+
+#save-btn:hover {
+  background: #3cb0fd;
+  text-decoration: none;
+}
+
 /*#annotations > span.tag {
     float:left;
 }*/
