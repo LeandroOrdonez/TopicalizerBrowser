@@ -100,7 +100,7 @@ function drawBarChart(element) {
     };
     var terms = function(d) {
         if (element.indexOf("Operation") !== -1) {
-            return d["Terms"];
+            return d["Topic Probability"] > 0.15 ? d["Terms"] : "";
         }
     };
     var serviceUri = function(d) {
@@ -183,16 +183,16 @@ function drawBarChart(element) {
             .attr('y', y)
             .attr('height', yScale.rangeBand())
             .attr('width', function(d) {
-        return x(barValue(d));
-    })
+                return x(barValue(d));
+            })
             .attr('stroke', 'white')
             .attr('fill', 'steelblue');
 // bar value labels
     barsContainer.selectAll("text").data(sortedData).enter().append("text")
             .attr("class", "chart-label")
             .attr("x", function(d) {
-        return x(barValue(d));
-    })
+                return x(barValue(d));
+            })
             .attr("y", yText)
             .attr("dx", 3) // padding-left
             .attr("dy", ".35em") // vertical-align: middle
@@ -200,8 +200,8 @@ function drawBarChart(element) {
             .attr("fill", "black")
             .attr("stroke", "none")
             .text(function(d) {
-        return d3.round(barValue(d), 2);
-    });
+                return d3.round(barValue(d), 2);
+            });
 // start line
     barsContainer.append("line")
             .attr("y1", -gridChartOffset)
@@ -218,32 +218,35 @@ function drawBarChart(element) {
                 .style("color", "cornflowerblue")
                 .attr("href", function(d) {
 //                console.log(terms(d));
-            return serviceUri(d);
-        })
+                    return serviceUri(d);
+                })
                 .attr("target", "_blank")
                 .html(function(d) {
 //                console.log(terms(d));
-            return "(Service Documentation)";
-        });
+                    return "(Service Documentation)";
+                });
 
         d3.selectAll('#annotations div').remove();
 
         var annotationsContainer = d3.select('#annotations').selectAll("div")
-                .data(sortedData.slice(0, 3)).enter().append("div")
+//                .data(sortedData.slice(0, 3)).enter().append("div")
+                .data(sortedData).enter().append("div")
                 .attr("class", "annotation")
                 .html(function(d) {
 //                console.log(terms(d));
-            return terms(d);
-        });
+                    return terms(d);
+                });
 
         var annStreams = $("#annotations div");
         tags = [];
         for (var i = 0; i < annStreams.length; i++) {
             var words = annStreams[i].innerHTML.split("; ");
-            words.forEach(function(value) {
-                if (tags.indexOf(value) === -1)
-                    tags.push(value);
-            });
+            if (words.length > 1) {
+                words.forEach(function(value) {
+                    if (tags.indexOf(value) === -1)
+                        tags.push(value);
+                });
+            }
         }
 
         //console.log(tags);
@@ -264,7 +267,13 @@ function drawBarChart(element) {
 //            $("#dialog").attr("title", $("#chart-title").text());
 //            $("#annotations-input").empty();
 //            $("#annotations-input").tagit("destroy");
-            $('#annotations-input').tagit({tagSource: tags, sortable: true});
+            $('#annotations-input').tagit({
+                tagSource: tags,
+                sortable: true,
+                tagsChanged: function(tagValue, action, element) {
+                    console.log("Tags changed!: " + tagValue + ", " + action + ", " + element);
+                }
+            });
             tags.forEach(function(e) {
 //                $('#annotations-input').append("<li data-value='" + e + "'>"+ e +"</li>");
                 $('#annotations-input').tagit("add", {label: e, value: e});

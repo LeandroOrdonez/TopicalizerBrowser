@@ -66,24 +66,29 @@
             $(function() {
                 $("#dialog").dialog({
                     autoOpen: false,
-                    width: 400,
+                    width: 500,
                     buttons: [
                         {
                             text: "Ok",
                             click: function() {
-                                $("#annotations-input").tagit("reset");
                                 $(this).dialog("close");
+                                //$("#annotations-input").tagit("reset");
                             }
                         },
                         {
                             text: "Cancel",
                             click: function() {
-                                $("#annotations-input").tagit("reset");
                                 $(this).dialog("close");
+                                //$("#annotations-input").tagit("reset");
                             }
                         }
                     ],
-                    modal: true
+                    modal: true,
+                    show: 500,
+                    hide: 500,
+                    close: function(event, ui) {
+                        $("#annotations-input").tagit("reset");
+                    }
                 });
                 // Hover states on the static widgets
                 /*$("#dialog-link").hover(
@@ -115,7 +120,7 @@
 
             <div id="indexLeftColumn">
 
-                <script>
+                <script type="text/javascript">
                     //<![CDATA[
                     var marginX = 100, marginY = 10,
                             outerDiameter = $('#indexLeftColumn').width(),
@@ -133,17 +138,17 @@
                             .padding(2)
                             .size([innerDiameter, innerDiameter])
                             .value(function(d) {
-                        return d.size;
-                    });
+                                return d.size;
+                            });
                     var drag = d3.behavior.drag()
                             .on('drag', function(d, i) {
-                        marginX += d3.event.dx;
-                        marginY += d3.event.dy;
-                        d3.select(this).attr("transform", function(d, i) {
-                            return "translate(" + [marginX, marginY] + ")";
-                        });
-                        d3.event.stopPropagation();
-                    });
+                                marginX += d3.event.dx;
+                                marginY += d3.event.dy;
+                                d3.select(this).attr("transform", function(d, i) {
+                                    return "translate(" + [marginX, marginY] + ")";
+                                });
+                                d3.event.stopPropagation();
+                            });
                     var svg = d3.select("#indexLeftColumn").append("svg")
                             .attr("width", outerDiameter)
                             .attr("height", outerDiameter)
@@ -159,65 +164,76 @@
                                 //.transition()
                                 //.duration(3000)
                                 .attr("class", function(d) {
-                            return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
-                        })
+                                    return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+                                })
                                 .attr("id", function(d) {
-                            if (d.depth !== 3) {
-                                return d.id;
-                            }
-                        })
+                                    if (d.depth !== 3) {
+                                        return d.id;
+                                    }
+                                })
                                 .attr("transform", function(d) {
-                            return "translate(" + d.x + "," + d.y + ")";
-                        })
+                                    return "translate(" + d.x + "," + d.y + ")";
+                                })
                                 .attr("r", function(d) {
-                            return d.r;
-                        })
+                                    return d.r;
+                                })
                                 .style("fill", function(d) {
-                            return d.children ? color(d.depth) : null;
-                        })
+                                    return d.children ? color(d.depth) : null;
+                                })
                                 .on("click", function(d) {
-                            if (d3.event.defaultPrevented) {
-                                return; // click suppressed
-                            }
-                            console.log("clicked!");
-                            selectedElement = d.name;
-                            selectedElementId = d.id;
-                            $("#chart-title").text(selectedElement);
-                            drawBarChart(selectedElementId ? selectedElementId : selectedElement);
-                            if (d.depth === 3) {
-                                var sel = "#" + d.name;
-                                //console.log(sel);
+                                    if (d3.event.defaultPrevented) {
+                                        return; // click suppressed
+                                    }
+                                    console.log("clicked!");
+                                    if (d.depth === 3) {
+                                        if(focus!==d.parent){
+                                            if(d.parent.children.length === 1) {
+                                                d = d.parent;
+                                            }
+                                        } else {
+                                            d = d.parent.parent;
+                                        }
+                                        //console.log(d.parent.children.length);
+                                        //var sel = d.parent.children.length === 1 ? "#" + d.parent.id : "#" + d.name;
+                                        //console.log(sel);
 
-                                zoom(root);
-                                return $(sel).d3Click();
-                                //return zoom(d3.select('"' + sel + '"'));
-                                //return zoom(d3.select(sel));
-                            } else {
-                                //return zoom(focus === d ? root : d);
-                                return zoom(d);
-                            }
-                        });
+                                        //zoom(root);
+                                        //return $(sel).d3Click();
+                                        //return zoom(d3.select('"' + sel + '"'));
+                                        //return zoom(d3.select(sel));
+                                        //} else {
+                                        //return zoom(focus === d ? root : d);
+                                        //    return zoom(d);
+                                    }
+                                    selectedElement = d.name;
+                                    selectedElementId = d.id;
+                                    $("#chart-title").text(selectedElement);
+                                    drawBarChart(selectedElementId ? selectedElementId : selectedElement);
+
+                                    return zoom(d);
+
+                                });
                         svg.append("g").selectAll("text")
                                 .data(nodes)
                                 .enter().append("text")
                                 .attr("class", "label")
                                 .attr("transform", function(d) {
-                            return "translate(" + d.x + "," + d.y + ")";
-                        })
+                                    return "translate(" + d.x + "," + d.y + ")";
+                                })
                                 .style("opacity", function(d) {
-                            return d.parent === root ? 1 : 0;
-                        })
+                                    return d.parent === root ? 1 : 0;
+                                })
                                 .text(function(d) {
-                            return d.name;
-                        });
+                                    return d.name;
+                                });
                         d3.select("#indexLeftColumn")
                                 .on("click", function() {
-                            if (d3.event.defaultPrevented) {
-                                return; // click suppressed
-                            }
-                            console.log("clicked!");
-                            zoom(root);
-                        });
+                                    if (d3.event.defaultPrevented) {
+                                        return; // click suppressed
+                                    }
+                                    console.log("clicked!");
+                                    zoom(root);
+                                });
                         function zoom(d, i) {
                             focus = d;
                             var k = innerDiameter / d.r / 2;
@@ -227,16 +243,16 @@
                             var transition = d3.selectAll("text:not(.chart-label),circle").transition()
                                     .duration(d3.event.altKey ? 7500 : 750)
                                     .attr("transform", function(d) {
-                                return "translate(" + x(d.x) + "," + y(d.y) + ")";
-                            });
+                                        return "translate(" + x(d.x) + "," + y(d.y) + ")";
+                                    });
                             transition.filter("circle")
                                     .attr("r", function(d) {
-                                return k * d.r;
-                            });
+                                        return k * d.r;
+                                    });
                             transition.filter("text")
                                     .style("opacity", function(d) {
-                                return d.parent === focus ? 1 : 0;
-                            });
+                                        return d.parent === focus ? 1 : 0;
+                                    });
                         }
                     });
                     d3.select(self.frameElement).style("height", outerDiameter + "px");
