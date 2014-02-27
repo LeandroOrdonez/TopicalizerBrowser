@@ -4,6 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <head>
         <title>Topicalizer Browser</title>
+        <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
         <link rel="stylesheet" type="text/css" href="css/styles.css" />
         <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.css" />
         <link rel="stylesheet" type="text/css" href="css/jquery-tagit-css/tagit-simple-blue.css" />
@@ -72,6 +74,13 @@
                             text: "Ok",
                             click: function() {
                                 $(this).dialog("close");
+                                opTags = [];
+                                var t = $("#annotations-input").tagit("tags");
+                                t.forEach(function(e) {
+                                    opTags.push(e.value);
+                                });
+                                localStorage.setItem('Operation-'+idElement, opTags);
+                                renderTags();
                                 //$("#annotations-input").tagit("reset");
                             }
                         },
@@ -138,17 +147,17 @@
                             .padding(2)
                             .size([innerDiameter, innerDiameter])
                             .value(function(d) {
-                                return d.size;
-                            });
+                        return d.size;
+                    });
                     var drag = d3.behavior.drag()
                             .on('drag', function(d, i) {
-                                marginX += d3.event.dx;
-                                marginY += d3.event.dy;
-                                d3.select(this).attr("transform", function(d, i) {
-                                    return "translate(" + [marginX, marginY] + ")";
-                                });
-                                d3.event.stopPropagation();
-                            });
+                        marginX += d3.event.dx;
+                        marginY += d3.event.dy;
+                        d3.select(this).attr("transform", function(d, i) {
+                            return "translate(" + [marginX, marginY] + ")";
+                        });
+                        d3.event.stopPropagation();
+                    });
                     var svg = d3.select("#indexLeftColumn").append("svg")
                             .attr("width", outerDiameter)
                             .attr("height", outerDiameter)
@@ -164,82 +173,82 @@
                                 //.transition()
                                 //.duration(3000)
                                 .attr("class", function(d) {
-                                    return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
-                                })
+                            return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+                        })
                                 .attr("id", function(d) {
-                                    if (d.depth !== 3) {
-                                        return d.id;
-                                    }
-                                })
+                            if (d.depth !== 3) {
+                                return d.id;
+                            }
+                        })
                                 .attr("transform", function(d) {
-                                    return "translate(" + d.x + "," + d.y + ")";
-                                })
+                            return "translate(" + d.x + "," + d.y + ")";
+                        })
                                 .attr("r", function(d) {
-                                    return d.r;
-                                })
+                            return d.r;
+                        })
                                 .style("fill", function(d) {
-                                    return d.children ? color(d.depth) : null;
-                                })
+                            return d.children ? color(d.depth) : null;
+                        })
                                 .on("click", function(d) {
-                                    if (d3.event.defaultPrevented) {
-                                        return; // click suppressed
-                                    }
-                                    console.log("clicked!");
-                                    if (d.depth === 3) {
-                                        if (focus !== d.parent && d.parent.children.length === 1) {
-                                            //if () {
-                                            d = d.parent;
-                                            //} else {
+                            if (d3.event.defaultPrevented) {
+                                return; // click suppressed
+                            }
+                            console.log("clicked!");
+                            if (d.depth === 3) {
+                                if (focus !== d.parent && d.parent.children.length === 1) {
+                                    //if () {
+                                    d = d.parent;
+                                    //} else {
 
-                                            //}
-                                        } else {
-                                            var sel = "#" + d.name;
-                                            console.log(sel);
-                                            zoom(root);
-                                            return $(sel).d3Click();
-                                            //d = d.parent.parent;
-                                        }
-                                        //console.log(d.parent.children.length);
-                                        //var sel = d.parent.children.length === 1 ? "#" + d.parent.id : "#" + d.name;
-                                        //console.log(sel);
+                                    //}
+                                } else {
+                                    var sel = "#" + d.name;
+                                    console.log(sel);
+                                    zoom(root);
+                                    return $(sel).d3Click();
+                                    //d = d.parent.parent;
+                                }
+                                //console.log(d.parent.children.length);
+                                //var sel = d.parent.children.length === 1 ? "#" + d.parent.id : "#" + d.name;
+                                //console.log(sel);
 
-                                        //zoom(root);
-                                        //return $(sel).d3Click();
-                                        //return zoom(d3.select('"' + sel + '"'));
-                                        //return zoom(d3.select(sel));
-                                        //} else {
-                                        //return zoom(focus === d ? root : d);
-                                        //    return zoom(d);
-                                    }
-                                    selectedElement = d.name;
-                                    selectedElementId = d.id;
-                                    $("#chart-title").text(selectedElement);
-                                    drawBarChart(selectedElementId ? selectedElementId : selectedElement);
+                                //zoom(root);
+                                //return $(sel).d3Click();
+                                //return zoom(d3.select('"' + sel + '"'));
+                                //return zoom(d3.select(sel));
+                                //} else {
+                                //return zoom(focus === d ? root : d);
+                                //    return zoom(d);
+                            }
+                            selectedElement = d.name;
+                            selectedElementId = d.id;
+                            $("#chart-title").text(selectedElement);
+                            drawBarChart(selectedElementId ? selectedElementId : selectedElement);
 
-                                    return zoom(d);
+                            return zoom(d);
 
-                                });
+                        });
                         svg.append("g").selectAll("text")
                                 .data(nodes)
                                 .enter().append("text")
                                 .attr("class", "label")
                                 .attr("transform", function(d) {
-                                    return "translate(" + d.x + "," + d.y + ")";
-                                })
+                            return "translate(" + d.x + "," + d.y + ")";
+                        })
                                 .style("opacity", function(d) {
-                                    return d.parent === root ? 1 : 0;
-                                })
+                            return d.parent === root ? 1 : 0;
+                        })
                                 .text(function(d) {
-                                    return d.name;
-                                });
+                            return d.name;
+                        });
                         d3.select("#indexLeftColumn")
                                 .on("click", function() {
-                                    if (d3.event.defaultPrevented) {
-                                        return; // click suppressed
-                                    }
-                                    console.log("clicked!");
-                                    zoom(root);
-                                });
+                            if (d3.event.defaultPrevented) {
+                                return; // click suppressed
+                            }
+                            console.log("clicked!");
+                            zoom(root);
+                        });
                         function zoom(d, i) {
                             focus = d;
                             var k = innerDiameter / d.r / 2;
@@ -249,16 +258,16 @@
                             var transition = d3.selectAll("text:not(.chart-label),circle").transition()
                                     .duration(d3.event.altKey ? 7500 : 750)
                                     .attr("transform", function(d) {
-                                        return "translate(" + x(d.x) + "," + y(d.y) + ")";
-                                    });
+                                return "translate(" + x(d.x) + "," + y(d.y) + ")";
+                            });
                             transition.filter("circle")
                                     .attr("r", function(d) {
-                                        return k * d.r;
-                                    });
+                                return k * d.r;
+                            });
                             transition.filter("text")
                                     .style("opacity", function(d) {
-                                        return d.parent === focus ? 1 : 0;
-                                    });
+                                return d.parent === focus ? 1 : 0;
+                            });
                         }
                     });
                     d3.select(self.frameElement).style("height", outerDiameter + "px");
@@ -269,7 +278,7 @@
                 <br />
                 <h3 style="padding: 0px; margin: 0px;"><span id="chart-title">Start by picking an element</span></h3>
                 <span id="category-name" style="display: none">
-                    <span id="name-label" style="font-size: 11px; font-weight: bold ">Name: </span>&nbsp;<span id="name-value" contenteditable="true"></span>
+                    <span id="name-label">Name: </span>&nbsp;<span id="name-value" contenteditable="true"></span>
                 </span><button id="save-btn" style="display: none" type="button">save</button>
                 <script type="text/javascript">
                     $('#name-value').focus(function() {

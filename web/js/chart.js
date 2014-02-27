@@ -1,12 +1,15 @@
 /* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ Document   : charts
+ Created on : 24-ene-2014, 22:31:34
+ Author     : Leandro Ordonez <leandro.ordonez.ante@gmail.com>
+ Description:
+ Managing d3.js charting and the user actions.
  */
 
 
 //var selectedCategory = '3';
 
-var dataCategories, dataOperations, tags;
+var dataCategories, dataOperations, idElement, tags, userTags;
 
 d3.csv("datasources/topics.csv", function(error, csvData) {
     dataCategories = csvData;
@@ -23,7 +26,7 @@ d3.csv("datasources/per-document-topics.csv", function(error, csvData) {
 });
 
 function drawBarChart(element) {
-    var idElement, selChart = $('#chart'),
+    var /*idElement, */selChart = $('#chart'),
             xAccessor, yAccessor, filterKey, data, xLabel, yLabel;
     console.log('calling Draw BarChart...');
 //    console.log(localStorage);
@@ -183,16 +186,16 @@ function drawBarChart(element) {
             .attr('y', y)
             .attr('height', yScale.rangeBand())
             .attr('width', function(d) {
-                return x(barValue(d));
-            })
+        return x(barValue(d));
+    })
             .attr('stroke', 'white')
             .attr('fill', 'steelblue');
 // bar value labels
     barsContainer.selectAll("text").data(sortedData).enter().append("text")
             .attr("class", "chart-label")
             .attr("x", function(d) {
-                return x(barValue(d));
-            })
+        return x(barValue(d));
+    })
             .attr("y", yText)
             .attr("dx", 3) // padding-left
             .attr("dy", ".35em") // vertical-align: middle
@@ -200,8 +203,8 @@ function drawBarChart(element) {
             .attr("fill", "black")
             .attr("stroke", "none")
             .text(function(d) {
-                return d3.round(barValue(d), 2);
-            });
+        return d3.round(barValue(d), 2);
+    });
 // start line
     barsContainer.append("line")
             .attr("y1", -gridChartOffset)
@@ -218,13 +221,13 @@ function drawBarChart(element) {
                 .style("color", "cornflowerblue")
                 .attr("href", function(d) {
 //                console.log(terms(d));
-                    return serviceUri(d);
-                })
+            return serviceUri(d);
+        })
                 .attr("target", "_blank")
                 .html(function(d) {
 //                console.log(terms(d));
-                    return "(Service Documentation)";
-                });
+            return "(Service Documentation)";
+        });
 
         d3.selectAll('#annotations div').remove();
 
@@ -234,8 +237,8 @@ function drawBarChart(element) {
                 .attr("class", "annotation")
                 .html(function(d) {
 //                console.log(terms(d));
-                    return terms(d);
-                });
+            return terms(d);
+        });
 
         var annStreams = $("#annotations div");
         tags = [];
@@ -249,40 +252,8 @@ function drawBarChart(element) {
             }
         }
 
-        //console.log(tags);
-        var formattedTags = [];
-        tags.forEach(function(e) {
-            formattedTags.push('<span class="tag">' + e + '</span> ');
-        });
+        renderTags();
 
-        //console.log(tags);
-        $("#annotations").html('<hr /><h4 style="padding: 0px; margin: 0px;">Annotations</h4><br />');
-        $("#annotations").append(formattedTags);
-        $("#annotations").append('<br /><br /><a href="#" id="dialog-link" class="tags-button">What do you think?</a>');
-        $("#indexRightColumn").css("padding-bottom", "15px");
-
-        // Link to open the dialog
-        $("#dialog-link").click(function(event) {
-            console.log("Click on dialog button...");
-//            $("#dialog").attr("title", $("#chart-title").text());
-//            $("#annotations-input").empty();
-//            $("#annotations-input").tagit("destroy");
-            $('#annotations-input').tagit({
-                tagSource: tags,
-                sortable: true,
-                tagsChanged: function(tagValue, action, element) {
-                    console.log("Tags changed!: " + tagValue + ", " + action + ", " + element);
-                }
-            });
-            tags.forEach(function(e) {
-//                $('#annotations-input').append("<li data-value='" + e + "'>"+ e +"</li>");
-                $('#annotations-input').tagit("add", {label: e, value: e});
-            });
-
-//            $("#annotations-input").text(tags);
-            $("#dialog").dialog("open");
-            event.preventDefault();
-        });
     } else {
         $("#indexRightColumn").css("padding-bottom", "30px");
     }
@@ -314,4 +285,77 @@ function type(d) {
         d["Topic Probability"] = +d["Topic Probability"];
     }
     return d;
+}
+
+Array.prototype.diff = function(a) {
+    return this.filter(function(i) {
+        return (a.indexOf(i) < 0);
+    });
+};
+
+Array.prototype.intersect = function(a) {
+    return this.filter(function(i) {
+        return (a.indexOf(i) !== -1);
+    });
+};
+
+function renderTags() {
+    userTags = (localStorage.getItem('Operation-' + idElement)) ? localStorage.getItem('Operation-' + idElement).split(',') : null;
+    //console.log(tags);
+    var formattedTags = [];
+    if (!userTags) {
+        tags.forEach(function(e) {
+            formattedTags.push('<span class="tag">' + e + '</span> ');
+        });
+    } else {
+
+        var okTags = tags.intersect(userTags);
+        var addTags = userTags.diff(tags);
+        var rmvTags = tags.diff(userTags);
+
+        okTags.forEach(function(e) {
+            formattedTags.push('<span class="tag">' + e + '</span> ');
+        });
+        rmvTags.forEach(function(e) {
+            formattedTags.push('<span class="tag removed">' + e + '</span> ');
+        });
+        addTags.forEach(function(e) {
+            formattedTags.push('<span class="tag added">' + e + '</span> ');
+        });
+    }
+
+    //console.log(tags);
+    $("#annotations").html('<hr /><h4 style="padding: 0px; margin: 0px;">Annotations</h4><br />');
+    $("#annotations").append(formattedTags);
+    $("#annotations").append('<br /><br /><a href="#" id="dialog-link" class="tags-button">What do you think?</a>');
+    $("#indexRightColumn").css("padding-bottom", "15px");
+
+    // Link to open the dialog
+    $("#dialog-link").click(function(event) {
+        console.log("Click on dialog button...");
+//            $("#dialog").attr("title", $("#chart-title").text());
+//            $("#annotations-input").empty();
+//            $("#annotations-input").tagit("destroy");
+        var tagSrc = userTags ? userTags : tags;
+        $('#annotations-input').tagit({
+            tagSource: tagSrc,
+            sortable: true
+//                tagsChanged: function(tagValue, action, element) {
+//                    console.log("Tags changed!: " + tagValue + ", " + action + ", " + element);
+//                    if (action === 'added') {
+//
+//                    } else {
+//
+//                    }
+//                }
+        });
+        tagSrc.forEach(function(e) {
+//                $('#annotations-input').append("<li data-value='" + e + "'>"+ e +"</li>");
+            $('#annotations-input').tagit("add", {label: e, value: e});
+        });
+
+//            $("#annotations-input").text(tags);
+        $("#dialog").dialog("open");
+        event.preventDefault();
+    });
 }
