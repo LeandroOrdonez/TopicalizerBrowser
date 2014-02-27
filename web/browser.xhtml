@@ -186,12 +186,18 @@
                                     }
                                     console.log("clicked!");
                                     if (d.depth === 3) {
-                                        if(focus!==d.parent){
-                                            if(d.parent.children.length === 1) {
-                                                d = d.parent;
-                                            }
+                                        if (focus !== d.parent && d.parent.children.length === 1) {
+                                            //if () {
+                                            d = d.parent;
+                                            //} else {
+
+                                            //}
                                         } else {
-                                            d = d.parent.parent;
+                                            var sel = "#" + d.name;
+                                            console.log(sel);
+                                            zoom(root);
+                                            return $(sel).d3Click();
+                                            //d = d.parent.parent;
                                         }
                                         //console.log(d.parent.children.length);
                                         //var sel = d.parent.children.length === 1 ? "#" + d.parent.id : "#" + d.name;
