@@ -9,7 +9,7 @@ LoginRadius_SocialLogin.util.ready(function() {
     LoginRadius_SocialLogin.init(options);
 });
 
-
+var userID;
 LoginRadiusSDK.onlogin = Successfullylogin;
 function Successfullylogin() {
     console.log("Successfullylogin...");
@@ -18,7 +18,10 @@ function Successfullylogin() {
         console.log("Data provider: " + data.Provider);
         console.log("Data First Name: " + data.FirstName);
         console.log("Data ID: " + data.ID);
-        alert("Welcome " + data.FirstName + "!");
+        userID = data.ID;
+        window.location.href = "/TopicalizerBrowser/browser.xhtml";
+        sessionStorage.setItem("user-profile", JSON.stringify(data));
+//        alert("Welcome " + data.FirstName + "!");
 
 //        document.getElementById('user-profile').value = JSON.stringify(data);
 //        document.getElementById('provider').value = (data.Provider);
