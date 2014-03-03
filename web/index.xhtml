@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+        <title>Topicalizer</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+        
+        <link rel="stylesheet" type="text/css" href="css/login.css" />
+
+        <!-- include bootstrap social -->
+        <link href="css/bootstrap-social/bootstrap.css" rel="stylesheet" />
+        <link href="css/bootstrap-social/font-awesome.css" rel="stylesheet" />
+        <link href="css/bootstrap-social/docs.css" rel="stylesheet" />
+        <link href="css/bootstrap-social/bootstrap-social.css" rel="stylesheet" />
+        <!--//////////////////////////-->
+
+        <script type="text/javascript" src="js/login-radius/Lo|ginRadiusSDK.1.0.0.js"></script>        
+        <script type="text/javascript" src="js/login-radius/LoginRadius.js"></script>
+        <script type="text/javascript" src="js/login.js" ></script>
+        <script type="text/javascript">
+            function clickFacebookLogin() {
+                var lr_IFrame = document.getElementsByTagName('iframe')[0];
+                lr_IFrame.contentWindow.document.getElementsByClassName('lr_providericons lr_facebook')[0].click();
+            }
+
+            function clickTwitterLogin() {
+                var lr_IFrame = document.getElementsByTagName('iframe')[0];
+                lr_IFrame.contentWindow.document.getElementsByClassName('lr_providericons lr_twitter')[0].click();
+            }
+        </script>
+        </head>
+
+    <body>
+
+        <form id="login">
+            <h1 class="h1-login">Topicalizer</h1>
+            <p style="text-align: center; font-size: small">Welcome! Topicalizer is a research initiative conduted by the Telematics Engineering Group 
+                <a  class="a-login" href='http://web.unicauca.edu.co/telematica/?q=telematica/ver_info_grup_inv&amp;grupo_inv=1'>(GIT)</a> 
+                at <a class="a-login" href="http://www.unicauca.edu.co">University of Cauca</a> aiming at easing the annotation process 
+                of web services by fitting a probabilistic topic model on service documentation.<br /><br />
+                If you are interested to participate in the evaluation of this approach, we invite you to access to this application by:
+            </p>
+            <br />
+            <fieldset id="inputs">
+                <!--<input id="username" type="text" placeholder="Username" autofocus required>   
+                <input id="password" type="password" placeholder="Password" required>-->
+                <a class="btn btn-block btn-social btn-lg btn-facebook" onclick="clickFacebookLogin();">
+                    <i class="fa fa-facebook"></i> Signing in with Facebook
+                </a>
+                <h2 class="h2-login">Or</h2>
+                <a class="btn btn-block btn-social btn-lg btn-twitter" onclick="clickTwitterLogin();">
+                    <i class="fa fa-twitter"></i> Signing in with Twitter
+                </a>
+            </fieldset>
+            <!--<fieldset id="actions">
+                <input type="submit" id="submit" value="Log in">
+                <a href="">Forgot your password?</a><a href="">Register</a>
+            </fieldset>-->
+            <div id="interfacecontainerdiv" class="interfacecontainerdiv" style="display: none"></div>            
+        </form>
+
+        <!-- BSA AdPacks code -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="bootstrap-social/assets/js/docs.js"></script>
+        <!--<script>
+        (function(){
+          var bsa = document.createElement('script');
+             bsa.async = true;
+             bsa.src = 'http://www.red-team-design.com/js/adpacks-demo.js';
+          (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+        })();
+        </script>-->
+
+    </body>
+</html>
