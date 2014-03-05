@@ -79,7 +79,7 @@
                                 t.forEach(function(e) {
                                     opTags.push(e.value);
                                 });
-                                localStorage.setItem('Operation-'+idElement, opTags);
+                                localStorage.setItem('Operation-' + idElement, opTags);
                                 renderTags();
                                 //$("#annotations-input").tagit("reset");
                             }
@@ -120,11 +120,21 @@
                     <h1>Topicalizer</h1>
                     <nav> 
                         <!--<a href="./index.xhtml">Back</a> -->
+                        <span id="user-welcome"></span>
                         <a href="#">Home</a> 
                         <a href="#">Help</a> 
                         <a href="#">Contact</a>
                     </nav>
                 </div>
+                <script type="text/javascript">
+                    var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
+                    if (userProfile) {
+                        $('#user-welcome').text('Welcome ' + userProfile.FirstName + "!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+                                .css("display", "inline");
+                    } else {
+                        $('#user-welcome').css("display", "none");
+                    }
+                </script>
             </div>
 
             <div id="indexLeftColumn">

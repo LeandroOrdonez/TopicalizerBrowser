@@ -19,8 +19,24 @@ function Successfullylogin() {
         console.log("Data First Name: " + data.FirstName);
         console.log("Data ID: " + data.ID);
         userID = data.ID;
-        window.location.href = "/TopicalizerBrowser/browser.xhtml";
-        sessionStorage.setItem("user-profile", JSON.stringify(data));
+        
+        
+        var userProfile = JSON.stringify(data);
+        sessionStorage.setItem("userProfile", JSON.stringify(data));
+        
+        var jqxhr = $.post("user", {"userID": data.ID, "userProfile": userProfile}, function() {
+            alert("success");
+            window.location.href = "/TopicalizerBrowser/browser.xhtml";
+        })
+                .done(function() {
+            alert("second success");
+        })
+                .fail(function() {
+            alert("error");
+        })
+                .always(function() {
+            alert("finished");
+        });
 //        alert("Welcome " + data.FirstName + "!");
 
 //        document.getElementById('user-profile').value = JSON.stringify(data);

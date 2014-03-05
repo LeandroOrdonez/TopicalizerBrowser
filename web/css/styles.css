@@ -286,7 +286,7 @@ span.removed {
     position: relative;
 }
 /* We just have one-lined elements, so we'll center the elements with the line-height set to the height of the header */
-.cbp-af-header h1, .cbp-af-header nav a {
+.cbp-af-header h1, .cbp-af-header nav a, .cbp-af-header nav #user-welcome {
     line-height: 70px;
 }
 .cbp-af-header h1 {
@@ -300,7 +300,7 @@ span.removed {
 .cbp-af-header nav {
     float: right;
 }
-.cbp-af-header nav a {
+.cbp-af-header nav a, .cbp-af-header nav #user-welcome {
     color: #fff;/*#aaa;*/
     font-weight: 700;
     margin: 0 0 0 20px;
@@ -311,7 +311,7 @@ span.removed {
     color: cornflowerblue;/*#333;*/
 }
 /* Transitions and class for reduced height */
-.cbp-af-header h1, .cbp-af-header nav a {
+.cbp-af-header h1, .cbp-af-header nav a, .cbp-af-header nav #user-welcome {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
@@ -320,7 +320,7 @@ span.removed {
     height: 40px;
     /*opacity: 0.7;*/
 }
-.cbp-af-header.cbp-af-header-shrink h1, .cbp-af-header.cbp-af-header-shrink nav a {
+.cbp-af-header.cbp-af-header-shrink h1, .cbp-af-header.cbp-af-header-shrink nav a, .cbp-af-header.cbp-af-header-shrink nav #user-welcome {
     line-height: 40px;
 }
 .cbp-af-header.cbp-af-header-shrink h1 {
