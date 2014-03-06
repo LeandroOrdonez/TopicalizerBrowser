@@ -6,16 +6,25 @@ package controller;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -24,8 +33,9 @@ import javax.servlet.http.HttpSession;
 public class SessionManager extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -54,7 +64,8 @@ public class SessionManager extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -84,7 +95,8 @@ public class SessionManager extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -132,8 +144,54 @@ public class SessionManager extends HttpServlet {
 //            ex.printStackTrace();
 //        }
         } else if (userPath.equals("/annotation")) {
-            String annotation = request.getParameter("annotation");
-            System.out.println(annotation);
+            String userID = request.getQueryString();
+            String annotationObject = request.getParameter("annotation");
+            System.out.println(annotationObject);
+
+            String annotationsPath = getServletContext().getRealPath("/WEB-INF/annotations/" + userID + ".json");
+            File f = new File(annotationsPath);
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject postedAnnotation = (JSONObject) parser.parse(annotationObject);
+                String operation = (String) postedAnnotation.keySet().iterator().next();
+                JSONArray annotation = (JSONArray) postedAnnotation.get(operation);
+
+                JSONObject annotationsFile;
+                if (f.exists() && !f.isDirectory()) {
+                    annotationsFile = (JSONObject) parser.parse(new FileReader(annotationsPath));
+                    annotationsFile.put(operation, annotation);
+                } else {
+                    f.createNewFile();
+                    annotationsFile = postedAnnotation;
+                }
+                
+                System.out.println(annotationsFile);
+
+                FileWriter file = new FileWriter(f);
+                file.write(annotationsFile.toJSONString());
+                file.flush();
+                file.close();
+
+//                    String name = (String) annotationsFile.get("name");
+//                    System.out.println(name);
+//
+//                    long age = (Long) annotationsFile.get("age");
+//                    System.out.println(age);
+//
+//                    // loop array
+//                    JSONArray msg = (JSONArray) annotationsFile.get("messages");
+//                    Iterator<String> iterator = msg.iterator();
+//                    while (iterator.hasNext()) {
+//                        System.out.println(iterator.next());
+//                    }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 

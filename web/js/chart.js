@@ -9,12 +9,12 @@
 
 //var selectedCategory = '3';
 
-var dataCategories, dataOperations, idElement, tags, userTags, jsonAnnotations;
+var dataCategories, dataOperations, idElement, tags, userTags; //, jsonAnnotations;
 
 var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
 
 $.getJSON("annotation?user=" + userProfile.ID, function(data) {
-    jsonAnnotations = data;
+    //jsonAnnotations = data;
     $.each(data, function(key, val) {
         sessionStorage.setItem(key, val);
     });
@@ -24,7 +24,7 @@ $.getJSON("annotation?user=" + userProfile.ID, function(data) {
 //            console.log("second success");
 //        })
         .fail(function() {
-            jsonAnnotations = {};
+            //jsonAnnotations = {};
             console.log("[ERROR] There are no annotations available for the specified user (" + userProfile.ID + ")");
         })
         .always(function() {
