@@ -24,7 +24,7 @@ function Successfullylogin() {
         var userProfile = JSON.stringify(data);
         sessionStorage.setItem("userProfile", userProfile);
         
-        var jqxhr = $.post("user", {"userID": data.ID, "userProfile": userProfile}, function() {
+        var jqxhr = $.post("user?" + userID, {"userProfile": userProfile}, function() {
             console.log("success");
             window.location.href = "/TopicalizerBrowser/browser.xhtml";
         })

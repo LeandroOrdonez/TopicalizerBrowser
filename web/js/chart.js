@@ -13,7 +13,7 @@ var dataCategories, dataOperations, idElement, tags, userTags; //, jsonAnnotatio
 
 var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
 
-$.getJSON("annotation?user=" + userProfile.ID, function(data) {
+$.getJSON("annotation?" + userProfile.ID, function(data) {
     //jsonAnnotations = data;
     $.each(data, function(key, val) {
         sessionStorage.setItem(key, val);

@@ -80,7 +80,7 @@ public class SessionManager extends HttpServlet {
         HttpSession session = request.getSession();
 
         if (userPath.equals("/annotation")) {
-            String userID = request.getParameter("user");
+            String userID = request.getQueryString();
             System.out.println(request.getQueryString());
             System.out.println(userID);
 
@@ -112,7 +112,7 @@ public class SessionManager extends HttpServlet {
 
         if (userPath.equals("/user")) {
             String userProfile = request.getParameter("userProfile");
-            String userID = request.getParameter("userID");
+            String userID = request.getQueryString();
 
             System.out.println(userID);
             System.out.println(userProfile);
