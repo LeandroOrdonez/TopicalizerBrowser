@@ -9,7 +9,27 @@
 
 //var selectedCategory = '3';
 
-var dataCategories, dataOperations, idElement, tags, userTags;
+var dataCategories, dataOperations, idElement, tags, userTags, jsonAnnotations;
+
+var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
+
+$.getJSON("annotation?user=" + userProfile.ID, function(data) {
+    jsonAnnotations = data;
+    $.each(data, function(key, val) {
+        sessionStorage.setItem(key, val);
+    });
+    console.log("Retrieving " + userProfile.ID + ".json ...");
+})
+//        .done(function() {
+//            console.log("second success");
+//        })
+        .fail(function() {
+            jsonAnnotations = {};
+            console.log("[ERROR] There are no annotations available for the specified user (" + userProfile.ID + ")");
+        })
+        .always(function() {
+            console.log("... Complete");
+        });
 
 d3.csv("datasources/topics.csv", function(error, csvData) {
     dataCategories = csvData;
@@ -186,16 +206,16 @@ function drawBarChart(element) {
             .attr('y', y)
             .attr('height', yScale.rangeBand())
             .attr('width', function(d) {
-        return x(barValue(d));
-    })
+                return x(barValue(d));
+            })
             .attr('stroke', 'white')
             .attr('fill', 'steelblue');
 // bar value labels
     barsContainer.selectAll("text").data(sortedData).enter().append("text")
             .attr("class", "chart-label")
             .attr("x", function(d) {
-        return x(barValue(d));
-    })
+                return x(barValue(d));
+            })
             .attr("y", yText)
             .attr("dx", 3) // padding-left
             .attr("dy", ".35em") // vertical-align: middle
@@ -203,8 +223,8 @@ function drawBarChart(element) {
             .attr("fill", "black")
             .attr("stroke", "none")
             .text(function(d) {
-        return d3.round(barValue(d), 2);
-    });
+                return d3.round(barValue(d), 2);
+            });
 // start line
     barsContainer.append("line")
             .attr("y1", -gridChartOffset)
@@ -221,13 +241,13 @@ function drawBarChart(element) {
                 .style("color", "cornflowerblue")
                 .attr("href", function(d) {
 //                console.log(terms(d));
-            return serviceUri(d);
-        })
+                    return serviceUri(d);
+                })
                 .attr("target", "_blank")
                 .html(function(d) {
 //                console.log(terms(d));
-            return "(Service Documentation)";
-        });
+                    return "(Service Documentation)";
+                });
 
         d3.selectAll('#annotations div').remove();
 
@@ -237,8 +257,8 @@ function drawBarChart(element) {
                 .attr("class", "annotation")
                 .html(function(d) {
 //                console.log(terms(d));
-            return terms(d);
-        });
+                    return terms(d);
+                });
 
         var annStreams = $("#annotations div");
         tags = [];
@@ -300,7 +320,7 @@ Array.prototype.intersect = function(a) {
 };
 
 function renderTags() {
-    userTags = (localStorage.getItem('Operation-' + idElement)) ? localStorage.getItem('Operation-' + idElement).split(',') : null;
+    userTags = (sessionStorage.getItem('Operation-' + idElement)) ? sessionStorage.getItem('Operation-' + idElement).split(',') : null;
     //console.log(tags);
     var formattedTags = [];
     if (!userTags) {

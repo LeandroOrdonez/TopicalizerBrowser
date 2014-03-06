@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,9 +24,8 @@ import javax.servlet.http.HttpSession;
 public class SessionManager extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP
-     * <code>GET</code> and
-     * <code>POST</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -53,10 +53,8 @@ public class SessionManager extends HttpServlet {
 //        }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP
-     * <code>GET</code> method.
+     * Handles the HTTP <code>GET</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -66,12 +64,27 @@ public class SessionManager extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+        String userPath = request.getServletPath();
+        HttpSession session = request.getSession();
+
+        if (userPath.equals("/annotation")) {
+            String userID = request.getParameter("user");
+            System.out.println(request.getQueryString());
+            System.out.println(userID);
+
+            String url = "/WEB-INF/annotations/" + userID + ".json";
+
+            try {
+                request.getRequestDispatcher(url).forward(request, response);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
-     * Handles the HTTP
-     * <code>POST</code> method.
+     * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -110,16 +123,18 @@ public class SessionManager extends HttpServlet {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        
-        // use RequestDispatcher to forward request internally
-        String url = getServletContext().getContextPath() + "/browser.xhtml";
-        
+            // use RequestDispatcher to forward request internally
+            String url = getServletContext().getContextPath() + "/browser.xhtml";
+
 //        try {
 //            request.getRequestDispatcher(url).forward(request, response);
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
 //        }
+        } else if (userPath.equals("/annotation")) {
+            String annotation = request.getParameter("annotation");
+            System.out.println(annotation);
+        }
     }
 
     /**
@@ -130,5 +145,5 @@ public class SessionManager extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 }

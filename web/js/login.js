@@ -25,17 +25,17 @@ function Successfullylogin() {
         sessionStorage.setItem("userProfile", JSON.stringify(data));
         
         var jqxhr = $.post("user", {"userID": data.ID, "userProfile": userProfile}, function() {
-            alert("success");
+            console.log("success");
             window.location.href = "/TopicalizerBrowser/browser.xhtml";
         })
                 .done(function() {
-            alert("second success");
+            console.log("second success");
         })
                 .fail(function() {
-            alert("error");
+            console.log("error");
         })
                 .always(function() {
-            alert("finished");
+            console.log("finished");
         });
 //        alert("Welcome " + data.FirstName + "!");
 
