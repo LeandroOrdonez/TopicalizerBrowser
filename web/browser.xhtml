@@ -81,7 +81,7 @@
                                 });
                                 jsonAnnotations['Operation-' + idElement] = opTags;
                                 sessionStorage.setItem('Operation-' + idElement, opTags);
-                                $.post("annotation", {"annotation": jsonAnnotations}, function() {
+                                $.post("annotation", {"annotation": JSON.stringify(jsonAnnotations)}, function() {
                                     console.log("POSTing annotations to the Topicalizer server...");
                                 })
                                         .done(function() {

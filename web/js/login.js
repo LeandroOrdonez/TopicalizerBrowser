@@ -22,7 +22,7 @@ function Successfullylogin() {
         
         
         var userProfile = JSON.stringify(data);
-        sessionStorage.setItem("userProfile", JSON.stringify(data));
+        sessionStorage.setItem("userProfile", userProfile);
         
         var jqxhr = $.post("user", {"userID": data.ID, "userProfile": userProfile}, function() {
             console.log("success");
