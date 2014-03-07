@@ -9,7 +9,7 @@
 
 //var selectedCategory = '3';
 
-var dataCategories, dataOperations, idElement, tags, userTags; //, jsonAnnotations;
+var dataCategories, dataOperations, idElement, tags, userTags, okTags, addTags, rmvTags; //, jsonAnnotations;
 
 var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
 
@@ -20,7 +20,7 @@ if(!userProfile) {
 $.getJSON("annotation?" + userProfile.ID, function(data) {
     //jsonAnnotations = data;
     $.each(data, function(key, val) {
-        sessionStorage.setItem(key, val);
+        sessionStorage.setItem(key, val.terms);
     });
     console.log("Retrieving " + userProfile.ID + ".json ...");
 })
@@ -335,9 +335,9 @@ function renderTags() {
         });
     } else {
 
-        var okTags = tags.intersect(userTags);
-        var addTags = userTags.diff(tags);
-        var rmvTags = tags.diff(userTags);
+        okTags = tags.intersect(userTags);
+        addTags = userTags.diff(tags);
+        rmvTags = tags.diff(userTags);
 
         okTags.forEach(function(e) {
             formattedTags.push('<span class="tag">' + e + '</span> ');

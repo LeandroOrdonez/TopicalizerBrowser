@@ -154,7 +154,7 @@ public class SessionManager extends HttpServlet {
                 JSONParser parser = new JSONParser();
                 JSONObject postedAnnotation = (JSONObject) parser.parse(annotationObject);
                 String operation = (String) postedAnnotation.keySet().iterator().next();
-                JSONArray annotation = (JSONArray) postedAnnotation.get(operation);
+                JSONObject annotation = (JSONObject) postedAnnotation.get(operation);
 
                 JSONObject annotationsFile;
                 if (f.exists() && !f.isDirectory()) {

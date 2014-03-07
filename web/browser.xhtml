@@ -80,9 +80,19 @@
                                     opTags.push(e.value);
                                 });
                                 var opID = 'Operation-' + idElement;
-                                var jsonAnnotation = {};
-                                jsonAnnotation[opID] = opTags;
+                                
                                 sessionStorage.setItem(opID, opTags);
+                                renderTags();
+                                
+                                var jsonAnnotation = {};
+                                jsonAnnotation[opID] = {};
+                                jsonAnnotation[opID].terms=opTags;
+                                jsonAnnotation[opID].tp=okTags;
+                                jsonAnnotation[opID].fp=rmvTags;
+                                jsonAnnotation[opID].fn=addTags;
+                                jsonAnnotation[opID].p= okTags.length / (okTags.length + rmvTags.length);  //precision
+                                jsonAnnotation[opID].r= okTags.length / (okTags.length + addTags.length);  //recall
+                                
                                 $.post("annotation?" + userProfile.ID, {"annotation": JSON.stringify(jsonAnnotation)}, function() {
                                     console.log("POSTing annotations to the Topicalizer server...");
                                 })
@@ -95,7 +105,6 @@
                                         .always(function() {
                                             console.log("Finished");
                                         });
-                                renderTags();
                                 //$("#annotations-input").tagit("reset");
                             }
                         },
