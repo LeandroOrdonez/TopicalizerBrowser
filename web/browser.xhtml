@@ -144,7 +144,7 @@
                 <script type="text/javascript">
                     //var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
                     if (userProfile) {
-                        $('#user-welcome').text('Welcome ' + userProfile.FirstName + "!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+                        $('#user-welcome').text('Hi ' + userProfile.FirstName + "!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
                                 .css("display", "inline");
                     } else {
                         $('#user-welcome').css("display", "none");
@@ -275,6 +275,9 @@
                                     zoom(root);
                                 });
                         function zoom(d, i) {
+                            marginX = 100; marginY = 10;
+                            window.scrollTo(0, (window.scrollY>0) ? 1 : 0);
+                            svg.attr("transform", "translate(" + marginX + "," + marginY + ")");
                             focus = d;
                             var k = innerDiameter / d.r / 2;
                             x.domain([d.x - d.r, d.x + d.r]);
@@ -301,7 +304,7 @@
             </div>
             <div id="indexRightColumn">
                 <br />
-                <h3 style="padding: 0px; margin: 0px;"><span id="chart-title">Start by picking an element</span></h3>
+                <h3 style="padding: 0px; margin: 0px;"><span id="chart-title">Welcome to Topicalizer Browser!</span></h3>
                 <span id="category-name" style="display: none">
                     <span id="name-label">Name: </span>&nbsp;<span id="name-value" contenteditable="true"></span>
                 </span><button id="save-btn" style="display: none" type="button">save</button>
@@ -320,6 +323,22 @@
                 </div>
                 <br />
                 <hr />
+                <p id="intro" class="intro">Enclosure diagrams use containment (nesting) to represent hierarchy.
+                    This interactive circle packing diagram shows the categorization obtained by running the Topicalizer 
+                    algorithm over a dataset of 80 SOAP Web APIs. Each one of the categories has a distribution over terms 
+                    associated, and contains a set of API operations which in turn may belong to several categories (according to their 
+                    category proportions represented by the white little circles).
+                    <br /><br />
+                    <img src="images/category-img.png" style="width: 120px; float: left; alignment-adjust: middle; padding-right: 10px" /> When clicking a category,
+                     the screen zooms in and the category's terms distributions is displayed on this panel. Based on this term distribution, you can give
+                     an optional name to the category.
+                    <br /><br />
+                    <img src="images/operation-img.png" style="width: 120px; float: right; alignment-adjust: middle; padding-left: 10px" /> When clicking an operation
+                    its category proportions are displayed, as well as a group of terms (or tags) which represents the annotations the algorithm assigns to that 
+                    particular operation. The application allows you to modify such annotations and adding new tags that you consider the algorithm has missed.
+                    <br /><br />
+                    That's pretty much it! Thank you very much for taking part of this!                    
+                </p>
                 <div id="chart" style="display: none">
 
                 </div>

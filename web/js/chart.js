@@ -13,6 +13,10 @@ var dataCategories, dataOperations, idElement, tags, userTags; //, jsonAnnotatio
 
 var userProfile = JSON.parse(sessionStorage.getItem("userProfile"));
 
+if(!userProfile) { 
+    window.location.href = "/TopicalizerBrowser/index.xhtml";
+}
+
 $.getJSON("annotation?" + userProfile.ID, function(data) {
     //jsonAnnotations = data;
     $.each(data, function(key, val) {
@@ -75,6 +79,7 @@ function drawBarChart(element) {
         //console.log(idElement);
         $('#service-uri').css('display', 'none');
         $('#annotations').css('display', 'none');
+        $('#intro').css('display', 'none');
     } else if (element.indexOf("Operation") !== -1) {
         //console.log('Categy selected...');
         idElement = element.substring(element.indexOf(".") + 1);
@@ -86,6 +91,7 @@ function drawBarChart(element) {
         data = dataOperations;
 //        selChart.style.display = 'inline';
         $('#category-name').css('display', 'none');
+        $('#intro').css('display', 'none');
         selChart.css('display', 'inline');
         $('#service-uri').css('display', 'inline');
         $('#annotations').css('display', 'inline');

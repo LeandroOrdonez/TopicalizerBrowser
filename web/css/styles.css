@@ -260,6 +260,14 @@ span.removed {
     pointer-events: none;
 }
 
+.intro {
+    font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-anchor: middle;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    padding: 0px 25px; 
+    text-align: justify;
+}
+
 .cbp-af-header {
     position: fixed;
     /*border-bottom: thin solid darkslateblue;*/
