@@ -281,8 +281,8 @@ function drawBarChart(element) {
             }
         }
         
-        $("#operation-doc").html('<br /><br /><hr /><h4 style="padding: 0px; margin: 0px;">Operation Documentation</h4><br />');
-        $("#operation-doc").append((operationDoc!=='' && operationDoc!==null)? '<span class="operation-doc">' + operationDoc + '</span>' : '<span class="operation-doc">No documentation Available</span>');
+        $("#operation-doc").html('<br /><br /><hr /><h4 style="padding: 0px; margin: 0px;">Operation Documentation</h4>');
+        $("#operation-doc").append((operationDoc!=='' && operationDoc!==null)? '<span class="operation-doc">' + operationDoc.length > 150 ? operationDoc : operationDoc.subsubstring(0,147) + '[...]' + '</span>' : '<span class="operation-doc">No documentation Available</span>');
 
         renderTags();
 
