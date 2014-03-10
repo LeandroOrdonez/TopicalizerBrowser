@@ -165,7 +165,7 @@
 
                 <script type="text/javascript">
                     //<![CDATA[
-                    var marginX = 100, marginY = 10,
+                    var marginX = 100, marginY = 10, operationDoc,
                             outerDiameter = $('#indexLeftColumn').width(),
                             innerDiameter = (outerDiameter - marginX - marginY) * 0.6;
                     //console.log(outerDiameter + ', ' + innerDiameter);
@@ -256,6 +256,7 @@
                                     }
                                     selectedElement = d.name;
                                     selectedElementId = d.id;
+                                    operationDoc = d.operation_doc ? d.operation_doc : null;
                                     $("#chart-title").text(selectedElement);
                                     drawBarChart(selectedElementId ? selectedElementId : selectedElement);
 
@@ -352,6 +353,9 @@
 
                 </div>
                 <!--<h6><span id="service-uri-label" style="display: none">Service Documentation</span></h6>-->
+                <div id="operation-doc" style="display: none">
+                    
+                </div>
                 <div id="annotations" style="display: none">
                     <br /><br />
                 </div>

@@ -79,6 +79,7 @@ function drawBarChart(element) {
         //console.log(idElement);
         $('#service-uri').css('display', 'none');
         $('#annotations').css('display', 'none');
+        $('#operation-doc').css('display', 'none');
         $('#intro').css('display', 'none');
     } else if (element.indexOf("Operation") !== -1) {
         //console.log('Categy selected...');
@@ -95,12 +96,14 @@ function drawBarChart(element) {
         selChart.css('display', 'inline');
         $('#service-uri').css('display', 'inline');
         $('#annotations').css('display', 'inline');
+        $('#operation-doc').css('display', 'inline');
     } else {
 //        selChart.style.display = 'none';
         selChart.css('display', 'none');
         $('#category-name').css('display', 'none');
         $('#service-uri').css('display', 'none');
         $('#annotations').css('display', 'none');
+        $('#operation-doc').css('display', 'none');
         d3.selectAll('#chart svg').remove();
         d3.selectAll('#service-uri a').remove();
         d3.selectAll('#annotations div').remove();
@@ -229,7 +232,7 @@ function drawBarChart(element) {
             .attr("fill", "black")
             .attr("stroke", "none")
             .text(function(d) {
-                return d3.round(barValue(d), 2);
+                return d3.round(barValue(d), 3);
             });
 // start line
     barsContainer.append("line")
@@ -277,6 +280,9 @@ function drawBarChart(element) {
                 });
             }
         }
+        
+        $("#operation-doc").html('<br /><br /><hr /><h4 style="padding: 0px; margin: 0px;">Operation Documentation</h4><br />');
+        $("#operation-doc").append((operationDoc!=='' && operationDoc!==null)? '<span class="operation-doc">' + operationDoc + '</span>' : '<span class="operation-doc">No documentation Available</span>');
 
         renderTags();
 
@@ -323,6 +329,14 @@ Array.prototype.intersect = function(a) {
     return this.filter(function(i) {
         return (a.indexOf(i) !== -1);
     });
+};
+
+String.prototype.unescapeHtml = function () {
+    var temp = document.createElement("div");
+    temp.innerHTML = this;
+    var result = temp.childNodes[0].nodeValue;
+    temp.removeChild(temp.firstChild);
+    return result;
 };
 
 function renderTags() {
