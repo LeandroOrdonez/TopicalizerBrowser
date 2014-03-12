@@ -276,6 +276,20 @@ span.removed {
     text-align: center;
 }
 
+.circular {
+  width: 200px;
+  height: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 150px;
+  -webkit-border-radius: 150px;
+  -moz-border-radius: 150px;
+  background: url(http://m.c.lnkd.licdn.com/mpr/mpr/shrink_200_200/p/7/000/1ac/184/3a2de57.jpg) no-repeat;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+  -moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+}
+
 .cbp-af-header {
     position: fixed;
     /*border-bottom: thin solid darkslateblue;*/
